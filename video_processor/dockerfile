@@ -38,4 +38,4 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 3000
 
 # define command to run app using CMD
-CMD ["npm", "start", "serve"] 
+CMD ["npm", "run", "serve"] 
