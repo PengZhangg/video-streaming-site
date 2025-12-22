@@ -1,0 +1,41 @@
+# stage 1 - build environment
+FROM node:18 AS builder
+
+# set working directory
+WORKDIR /app
+
+# copy package and package-log json into working directory
+COPY package*.json ./
+
+# install package.json dependencies
+RUN npm install
+
+# bundle app source in docker img
+COPY . .
+
+# build app
+RUN npm run build
+
+# stage 2 - the production environment, start w/ fresh img
+FROM node:18
+
+# install ffmpeg in container
+RUN apt-get update && apt-get install -y ffmpeg
+
+# set working directory 
+WORKDIR /app
+
+# copy package and package-log json into working directory
+COPY package*.json ./
+
+# install only production dependencies
+RUN npm install --only=production
+
+# copy only compiled output from build stage
+COPY --from=builder /app/dist ./dist
+
+# make port 3000 available outside of container
+EXPOSE 3000
+
+# define command to run app using CMD
+CMD ["npm", "start", "serve"] 
