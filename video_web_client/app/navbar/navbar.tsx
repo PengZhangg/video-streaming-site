@@ -5,27 +5,27 @@ import Link from "next/link";
 
 import styles from "./navbar.module.css"
 import SignIn from "./sign-in";
-import { onAuthStateChangedHelper}  from "../util/firebase";
+import { onAuthStateChangedHelper } from "../util/firebase";
 import { useEffect, useState } from "react";
 import { User } from "firebase/auth";
 
 export default function Navbar() {
-    const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChangedHelper((user) => {
-            setUser(user);
-        });
-
-        return () => unsubscribe();
+  useEffect(() => {
+    const unsubscribe = onAuthStateChangedHelper((user) => {
+      setUser(user);
     });
 
-    return (
-        <nav className={styles.nav}>
-            <Link href="/">
-                <Image src="/logo.svg" alt="Logo" width={120} height={120} />
-            </Link>
-            <SignIn user={user}/>
-        </nav>
-    )
+    return () => unsubscribe();
+  });
+
+  return (
+    <nav className={styles.nav}>
+      <Link href="/">
+        <Image src="/logo.svg" alt="Logo" width={120} height={120} />
+      </Link>
+      <SignIn user={user} />
+    </nav>
+  )
 }
